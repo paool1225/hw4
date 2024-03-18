@@ -1,18 +1,32 @@
 #ifndef RECCHECK
-//if you want to add any #includes like <iostream> you must do them here (before the next endif)
-
+#include <algorithm>
+#include <utility>
 #endif
 
 #include "equal-paths.h"
 using namespace std;
 
 
-// You may add any prototypes of helper functions here
+pair<int, bool> checkEqualPaths(Node* node, int depth);
 
+// Implementation of the equalPaths function that initiates the recursive checking.
+bool equalPaths(Node *root) {
+    if (!root) return true;
 
-bool equalPaths(Node * root)
-{
-    // Add your code below
+    auto result = checkEqualPaths(root, 0);
 
+    return result.second;
 }
 
+pair<int, bool> checkEqualPaths(Node* node, int depth) {
+    if (!node) {
+        return {depth, true};
+    }
+
+    auto leftResult = checkEqualPaths(node->left, depth + 1);
+    auto rightResult = checkEqualPaths(node->right, depth + 1);
+
+    bool isValid = leftResult.second && rightResult.second && (!node->left || !node->right || leftResult.first == rightResult.first);
+
+    return {max(leftResult.first, rightResult.first), isValid};
+}
